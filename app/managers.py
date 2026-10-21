@@ -1,11 +1,12 @@
+import sqlite3
 from app.models import Actor
 
 
 class ActorManager:
     def __init__(self, db_name, table_name):
-        self.connection = db_name.connect('db_name')
         self.table_name = table_name
         self.db_name = db_name
+        self.connection = sqlite3.connect(self.db_name)
 
     def create(self, first_name, last_name):
         self.connection.execute(
@@ -25,14 +26,14 @@ class ActorManager:
     def update(self, pk, new_first_name, new_last_name):
         self.connection.execute(
             f"UPDATE {self.table_name}"
-            " SET first_name = ?, last_name = ? WHERE pk = ?",
+            " SET first_name = ?, last_name = ? WHERE id = ?",
             (new_first_name, new_last_name, pk)
         )
         self.connection.commit()
 
     def delete(self, pk):
         self.connection.execute(
-            f"DELETE FROM {self.table_name} WHERE pk = ?",
+            f"DELETE FROM {self.table_name} WHERE id = ?",
             (pk,)
         )
         self.connection.commit()
